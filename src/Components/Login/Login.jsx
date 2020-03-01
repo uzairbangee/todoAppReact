@@ -13,8 +13,8 @@ class Login extends Component {
         return (
           <div>
 
-            {this.props.status == true && <Alert/>}
-            {this.props.status == false && <AlertFail/>}
+            {this.props.status === true && <Alert/>}
+            {this.props.status === false && <AlertFail/>}
 
             <form onSubmit={this.props.formsubmit}>
  

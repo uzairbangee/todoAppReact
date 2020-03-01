@@ -209,7 +209,7 @@ body {
 
 .list-wrapper .completed {
     text-decoration: line-through;
-    text-decoration-color: #3da5f4
+    text-decoration-color:red
 }
 
 .list-wrapper ul li .form-check {
