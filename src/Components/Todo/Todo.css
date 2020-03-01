@@ -114,7 +114,9 @@ body {
     line-height: 1;
     font-weight: 400;
     padding: .7rem 1.5rem;
-    border-radius: 0.1275rem
+    border-radius: 0.1275rem;
+    width: 100px;
+    height: 35px;
 }
 
 .list-wrapper {
