@@ -10,7 +10,8 @@ function TodoItem(props) {
               className="checkbox"
               type="checkbox"
               onChange={props.check}
-            />{" "}
+              checked={props.status === true && 'checked'}
+            />
             {props.title}
             <i className="input-helper"></i>
           </label>

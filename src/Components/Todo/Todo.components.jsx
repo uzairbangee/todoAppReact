@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import TodoItem from "../TodoItem/TodoItem.component";
 import Search from "../Search/Seach.component";
 import "./Todo.css";
+import {connect} from 'react-redux';
+import TodoMiddleware from '../../Store/middleware/todoMiddleware';
+import Alert from "../Alert/Alert";
 
 // USE THE STATE AS THE DATA STORE
 // WHENEVER THE STATE CHANGES YOUR COMPONENT WILL RE-RENDER
@@ -9,8 +12,6 @@ import "./Todo.css";
 class Todo extends Component {
   state = {
     title: "",
-    status: "not-complete",
-    todos: []
   };
 
   ////Triger on every change of character in input tag.
@@ -21,10 +22,9 @@ class Todo extends Component {
 
   ////Triger on every click of submit button.
     handleClick = () => {
-        if (this.state.title) {
-        const { title, status, todos } = this.state;
-        const newTodos = [...todos, { title, status }];
-        this.setState({ todos: newTodos, title: "" });
+        if (this.state.title && this.props.todos && this.props.todos.every(item => this.state.title !== item.task)) {
+        this.props.addTodo({task : this.state.title})
+        this.setState({ title: "" });
         }
     };
 
@@ -37,29 +37,14 @@ class Todo extends Component {
         }
     };
 
-  
-  ///Triger when remove button is clicked
-    handleRemove = (event, index) => {
-        const { todos } = this.state;
-        const newTodosArray = todos.splice(index, 1);
-        this.setState({ todos: newTodosArray });
-    };
-
-
-  ///Trigger when checked is ticked.
-    handleCheck = ({ target }, index) => {
-        const { todos } = this.state;
-        const newTodos = todos;
-        target.checked
-        ? (newTodos[index].status = "completed")
-        : (newTodos[index].status = "not-complete");
-
-        this.setState({ todos: newTodos });
-    };
+    componentDidMount = () => {
+        this.props.getTodo();
+    }
 
     render() {
         return (
         <div>
+            {this.props.message && <Alert type="danger" message={this.props.message}/>}
             <div className="page-content page-container" id="page-content">
             <div className="padding">
                 <div className="row container d-flex justify-content-center">
@@ -75,13 +60,15 @@ class Todo extends Component {
                         />
                         <div className="list-wrapper">
                         <ul className="d-flex flex-column-reverse todo-list">
-                            {this.state.todos.map((item, index) => (
+                            {this.props.todos && 
+                            this.props.todos.map((item, index) => (
                             <TodoItem
-                                checked={item.status === "completed" ? true : false}
-                                key={index}
-                                title={item.title}
-                                check={event => this.handleCheck(event, index)}
-                                click={event => this.handleRemove(event, index)}
+                                checked={item.completed === true ? true : false}
+                                key={item.id}
+                                title={item.task}
+                                check={() => this.props.updateTodo(item.id, index)}
+                                click={() => this.props.deleteTodo(item.id)}
+                                status={item.completed}
                             />
                             ))}
                         </ul>
@@ -97,4 +84,21 @@ class Todo extends Component {
     }
 }
 
-export default Todo;
+const mapStateToProps = (state) => {
+    // console.log(state);
+    return {
+        todos : state.todo.todo,
+        message : state.todo.errorMessage
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getTodo : () => dispatch(TodoMiddleware.getTodoMiddleware()),
+        addTodo : (data) => dispatch(TodoMiddleware.addTodoMiddleware(data)),
+        updateTodo : (id, index) => dispatch(TodoMiddleware.updateTodoMiddleware(id, index)),
+        deleteTodo : (id) => dispatch(TodoMiddleware.deleteTodoMiddleware(id)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Todo);

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import Username from '../Username/Username';
-import Password from '../Password/Password';
+// import Username from '../Username/Username';
+import Input from '../Input/Input.component';
 import './Login.css'
 import Alert from '../Alert/Alert';
 import AlertFail from '../AlertFail/AlertFail';
@@ -19,8 +19,9 @@ class Login extends Component {
             <form onSubmit={this.props.formsubmit}>
  
             <div className="container">
-              <Username value={this.props.username} change={this.props.formchange}/>
-              <Password value={this.props.password} change={this.props.formchange}/>
+              <Input
+                value={this.props.password}
+                change={this.props.formchange}/>
               <button type="submit">Login</button>
             </div>
 
